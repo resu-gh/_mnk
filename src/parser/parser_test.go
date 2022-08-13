@@ -6,6 +6,43 @@ import (
 	"testing"
 )
 
+func TestIntegerLiteralExpression(t *testing.T) {
+	input := "5;"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	// the tree must hava 1 node
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+
+	// the only node must be of type *ast.ExpressionStatement
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	// *ast.ExpressionStatement.Expression must be of type *ast.IntegerLiteral
+	literal, ok := stmt.Expression.(*ast.IntegerLiteral)
+	if !ok {
+		t.Fatalf("exp not *ast.IntegerLiteral. got=%T", stmt.Expression)
+	}
+
+	// the Value must be 5
+	if literal.Value != 5 {
+		t.Errorf("literal.Value not %d. got=%d", 5, literal.Value)
+	}
+	// TokenLiteral() must produce 5
+	if literal.TokenLiteral() != "5" {
+		t.Errorf("literal.TokenLiteral not %s. got=%s", "5", literal.TokenLiteral())
+	}
+}
+
+// ================================
+
 func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
 
@@ -14,28 +51,28 @@ func TestIdentifierExpression(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-    // the tree must hava 1 node
+	// the tree must hava 1 node
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
 	}
 
-    // the only node must be of type *ast.ExpressionStatement
+	// the only node must be of type *ast.ExpressionStatement
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
-    // *ast.ExpressionStatement.Expression must be of type *ast.Identifier
+	// *ast.ExpressionStatement.Expression must be of type *ast.Identifier
 	ident, ok := stmt.Expression.(*ast.Identifier)
 	if !ok {
 		t.Fatalf("exp not *ast.Identifier. got=%T", stmt.Expression)
 	}
 
-    // the Value must be "foobar"
+	// the Value must be "foobar"
 	if ident.Value != "foobar" {
 		t.Errorf("ident.Value not %s. got=%s", "foobar", ident.Value)
 	}
-    // TokenLiteral() must produce "foobar"
+	// TokenLiteral() must produce "foobar"
 	if ident.TokenLiteral() != "foobar" {
 		t.Errorf("ident.TokenLiteral not %s. got=%s", "foobar", ident.TokenLiteral())
 	}
