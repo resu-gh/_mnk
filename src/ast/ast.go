@@ -138,7 +138,7 @@ func (i *Identifier) String() string {
 	return i.Value
 }
 
-// ============================== integer expression node
+// ============================== integer literal expression node
 
 type IntegerLiteral struct {
 	Token token.Token
@@ -153,6 +153,23 @@ func (il *IntegerLiteral) TokenLiteral() string {
 
 func (il *IntegerLiteral) String() string {
 	return il.Token.Literal
+}
+
+// ============================== boolean literal expression node
+
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (b *Boolean) expressionNode() {}
+
+func (b *Boolean) TokenLiteral() string {
+	return b.Token.Literal
+}
+
+func (b *Boolean) String() string {
+	return b.Token.Literal
 }
 
 // ============================== prefix expression node

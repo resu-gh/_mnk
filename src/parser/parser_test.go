@@ -1,11 +1,20 @@
 package parser
 
 import (
-	"fmt"
 	"mnk/src/ast"
 	"mnk/src/lexer"
 	"testing"
 )
+
+// TestOperatorPrecedenceParsing
+// TestParsingInfixExpressions
+// TestParsingPrefixExpressions
+// TestIntegerLiteralExpression
+// TestIdentifierExpression
+// TestLetStatements
+// TestReturnStatements
+
+// ================================
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	tests := []struct {
@@ -137,23 +146,41 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 }
 
-func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
-	integ, ok := il.(*ast.IntegerLiteral)
+// ================================
+
+func TestBooleanExpression(t *testing.T) {
+	input := "true;"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	// the tree must hava 1 node
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+
+	// the only node must be of type *ast.ExpressionStatement
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Errorf("il not *ast.IntegerLiteral. got=%T", il)
-		return false
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
 
-	if integ.Value != value {
-		t.Errorf("integ.Value not %d. got=%d", value, integ.Value)
+	// *ast.ExpressionStatement.Expression must be of type *ast.Boolean
+	literal, ok := stmt.Expression.(*ast.Boolean)
+	if !ok {
+		t.Fatalf("exp not *ast.Boolean. got=%T", stmt.Expression)
 	}
 
-	if integ.TokenLiteral() != fmt.Sprintf("%d", value) {
-		t.Errorf("integ.TokenLiteral not %d. got=%s", value, integ.TokenLiteral())
-		return false
+	// the Value must be true
+	if literal.Value != true {
+		t.Errorf("literal.Value not %t. got=%t", true, literal.Value)
 	}
-
-	return true
+	// TokenLiteral() must produce true
+	if literal.TokenLiteral() != "true" {
+		t.Errorf("literal.TokenLiteral not %s. got=%s", "true", literal.TokenLiteral())
+	}
 }
 
 // ================================
@@ -230,6 +257,8 @@ func TestIdentifierExpression(t *testing.T) {
 	}
 }
 
+// ================================
+// ================================
 // ================================
 
 func TestLetStatements(t *testing.T) {
@@ -320,22 +349,4 @@ return 993322;
 			t.Errorf("returnStmt.TokenLiteral not 'return', got %q", returnStmt.TokenLiteral())
 		}
 	}
-}
-
-// ================================
-
-func checkParserErrors(t *testing.T, p *Parser) {
-	errors := p.Errors()
-
-	if len(errors) == 0 {
-		return
-	}
-
-	t.Errorf("parser has %d errors", len(errors))
-
-	for _, msg := range errors {
-		t.Errorf("parser error: %q", msg)
-	}
-
-	t.FailNow()
 }
