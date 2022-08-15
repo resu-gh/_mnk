@@ -32,7 +32,7 @@ func (i *Integer) Inspect() string {
 // ============================== boolean ir
 
 type Boolean struct {
-	Value int64
+	Value bool
 }
 
 func (b *Boolean) Type() ObjectType {
@@ -40,7 +40,7 @@ func (b *Boolean) Type() ObjectType {
 }
 
 func (b *Boolean) Inspect() string {
-	return fmt.Sprintf("%b", b.Value)
+	return fmt.Sprintf("%t", b.Value)
 }
 
 // ============================== null ir
