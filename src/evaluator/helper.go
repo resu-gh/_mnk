@@ -8,6 +8,9 @@ import (
 )
 
 // testEval
+// testIntegerObject
+// testBooleanObject
+// testNullObject
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
@@ -41,6 +44,15 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 
 	if result.Value != expected {
 		t.Errorf("object has wrong value. want=%t, got=%t", expected, result.Value)
+		return false
+	}
+
+	return true
+}
+
+func testNullObject(t *testing.T, obj object.Object) bool {
+	if obj != NULL {
+		t.Errorf("object is not NULL. got=%T(%+v)", obj, obj)
 		return false
 	}
 
