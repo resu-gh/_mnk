@@ -63,6 +63,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIdentifier(node, env)
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
+	case *ast.StringLiteral:
+		return &object.String{Value: node.Value}
 	case *ast.FunctionLiteral:
 		params := node.Parameters
 		body := node.Body
@@ -116,7 +118,7 @@ func unwrapReturnValue(obj object.Object) object.Object {
 		return returnValue.Value
 	}
 
-    return obj
+	return obj
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
