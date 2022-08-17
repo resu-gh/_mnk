@@ -271,6 +271,32 @@ func (ie *InfixExpression) String() string {
 	return out.String()
 }
 
+// ============================== index expression node
+
+type IndexExpression struct {
+	Token token.Token // the [ token
+	Left  Expression
+	Index Expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+
+func (ie *IndexExpression) TokenLiteral() string {
+	return ie.Token.Literal
+}
+
+func (ie *IndexExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+
+	return out.String()
+}
+
 // ============================== if expression node
 
 type IfExpression struct {
