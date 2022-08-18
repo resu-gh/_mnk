@@ -187,8 +187,8 @@ func TestErrorHandling(t *testing.T) {
             return 1;
             } `, "unknown operator: BOOLEAN + BOOLEAN"},
 		{"foobar", "identifier not found: foobar"},
-        { `{"name": "Monkey"}[fn(x) { x }];`, "unusable as hash key: FUNCTION", },
-		{ `999[1]`, "index operator not supported: INTEGER", },
+		{`{"name": "Monkey"}[fn(x) { x }];`, "unusable as hash key: FUNCTION"},
+		{`999[1]`, "index operator not supported: INTEGER"},
 	}
 
 	for _, tt := range tests {
