@@ -53,11 +53,11 @@ func testIntegerObject(expected int64, actual object.Object) error {
 	if !ok {
 		return fmt.Errorf("object is not Integer. got=%T (%+v)", actual, actual)
 	}
-    if result.Value!=expected {
-        return fmt.Errorf("object has wrong value. got=%d, want=%d", result.Value,expected)
-    }
+	if result.Value != expected {
+		return fmt.Errorf("object has wrong value. got=%d, want=%d", result.Value, expected)
+	}
 
-    return nil
+	return nil
 }
 
 func testConstants(t *testing.T, expected []interface{}, actual []object.Object) error {

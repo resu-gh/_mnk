@@ -6,6 +6,21 @@ import (
 	"fmt"
 )
 
+type Opcode byte
+
+const (
+	OpConstant Opcode = iota
+)
+
+type Definition struct {
+	Name          string
+	OperandWidths []int
+}
+
+var definitions = map[Opcode]*Definition{
+	OpConstant: {"OpConstant", []int{2}},
+}
+
 type Instructions []byte
 
 func (ins Instructions) String() string {
@@ -20,6 +35,7 @@ func (ins Instructions) String() string {
 		}
 
 		operands, read := ReadOperands(def, ins[i+1:])
+        fmt.Println(operands, read)
 
 		fmt.Fprintf(&out, "%04d %s\n", i, ins.fmtInstruction(def, operands))
 
@@ -41,22 +57,7 @@ func (ins *Instructions) fmtInstruction(def *Definition, operands []int) string 
 		return fmt.Sprintf("%s %d", def.Name, operands[0])
 	}
 
-    return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
-}
-
-type Opcode byte
-
-const (
-	OpConstant Opcode = iota
-)
-
-type Definition struct {
-	Name          string
-	OperandWidths []int
-}
-
-var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}},
+	return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
 }
 
 func Lookup(op byte) (*Definition, error) {

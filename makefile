@@ -8,6 +8,7 @@ run:
 	go test ./src/evaluator
 	go test ./src/code
 	go test ./src/compiler
+	go test ./src/vm
 	echo
 	tput setaf 2; echo "exec:"; tput sgr0
 	go run src/main.go
