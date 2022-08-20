@@ -7,6 +7,7 @@ run:
 	go test ./src/object
 	go test ./src/evaluator
 	go test ./src/code
+	go test ./src/compiler
 	echo
 	tput setaf 2; echo "exec:"; tput sgr0
 	go run src/main.go
