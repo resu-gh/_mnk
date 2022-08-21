@@ -20,3 +20,12 @@ func TestIntegerArithmetic(t *testing.T) {
 
 	runVmTests(t, tests)
 }
+
+func TestBooleanExpressions(t *testing.T) {
+	tests := []vmTestCase{
+		{"true", true},
+		{"false", false},
+	}
+
+	runVmTests(t, tests)
+}
