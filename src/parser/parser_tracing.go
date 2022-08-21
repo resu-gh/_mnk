@@ -7,7 +7,7 @@ import (
 
 var traceLevel int = 0
 
-const traceIndentPlaceholder string = "\t"
+const traceIndentPlaceholder string = "  "
 
 func indentLevel() string {
 	return strings.Repeat(traceIndentPlaceholder, traceLevel-1)

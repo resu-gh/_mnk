@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"io"
 	"mnk/src/compiler"
-	// "mnk/src/evaluator"
 	"mnk/src/lexer"
-	// "mnk/src/object"
 	"mnk/src/parser"
 	"mnk/src/vm"
+	// "mnk/src/evaluator"
+	// "mnk/src/object"
 )
 
 const PROMPT = ">> "
@@ -55,8 +55,8 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		stackTop := machine.StackTop()
-		io.WriteString(out, stackTop.Inspect())
+		LastPopped := machine.LastPoppedStackElem()
+		io.WriteString(out, LastPopped.Inspect())
 		io.WriteString(out, "\n")
 	}
 }
