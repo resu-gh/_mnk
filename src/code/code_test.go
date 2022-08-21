@@ -11,6 +11,7 @@ func TestMake(t *testing.T) {
 		expected []byte
 	}{
 		{OpConstant, []int{65534}, []byte{byte(OpConstant), 255, 254}},
+		{OpAdd, []int{}, []byte{byte(OpAdd)}},
 	}
 
 	for _, tt := range tests {
@@ -30,14 +31,14 @@ func TestMake(t *testing.T) {
 
 func TestInstructionsString(t *testing.T) {
 	instructions := []Instructions{
-		Make(OpConstant, 1),
+		Make(OpAdd),
 		Make(OpConstant, 2),
 		Make(OpConstant, 65534),
 	}
 
-	expected := `0000 OpConstant 1
-0003 OpConstant 2
-0006 OpConstant 65534
+	expected := `0000 OpAdd
+0001 OpConstant 2
+0004 OpConstant 65534
 `
 
 	concatted := Instructions{}
@@ -46,7 +47,7 @@ func TestInstructionsString(t *testing.T) {
 	}
 
 	if concatted.String() != expected {
-		t.Errorf("instructions wrongly formatted.\nwant=%q\ngot=%q", expected, concatted.String())
+		t.Errorf("instructions wrongly formatted.\nwant=%q\ngot= %q", expected, concatted.String())
 	}
 }
 
@@ -57,6 +58,7 @@ func TestReadOperands(t *testing.T) {
 		bytesRead int
 	}{
 		{OpConstant, []int{65534}, 2},
+		{OpAdd, []int{}, 0},
 	}
 
 	for _, tt := range tests {
@@ -74,7 +76,7 @@ func TestReadOperands(t *testing.T) {
 
 		for i, want := range tt.operands {
 			if operandsRead[i] != want {
-				t.Errorf("operand wrong. want=%d, got%d", want, operandsRead[i])
+				t.Errorf("operand wrong. want=%d, got=%d", want, operandsRead[i])
 			}
 		}
 	}
