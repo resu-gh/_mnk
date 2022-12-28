@@ -24,10 +24,10 @@ func decIndent() { traceLevel -= 1 }
 func trace(msg string) string {
 	incIndent()
 	tracePrint("BEGIN " + msg)
-    return msg
+	return msg
 }
 
 func untrace(msg string) {
 	tracePrint("END " + msg)
-    decIndent()
+	decIndent()
 }
