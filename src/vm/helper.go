@@ -58,6 +58,10 @@ func testExpectedObject(t *testing.T, expected interface{}, actual object.Object
 		if err != nil {
 			t.Errorf("testIntegerObject failed: %s", err)
 		}
+	case *object.Null:
+		if actual != Null {
+			t.Errorf("object is not Null: %T (%+v)", actual, actual)
+		}
 	}
 }
 
