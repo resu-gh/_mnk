@@ -91,13 +91,11 @@ func (vm *VM) Run() error {
 	var ip int
 	var ins code.Instructions
 	var op code.Opcode
-
 	for vm.currentFrame().ip < len(vm.currentFrame().Instructions())-1 {
 		vm.currentFrame().ip++
 		ip = vm.currentFrame().ip
 		ins = vm.currentFrame().Instructions()
 		op = code.Opcode(ins[ip])
-
 		switch op {
 		case code.OpConstant:
 			constIndex := code.ReadUint16(ins[ip+1:])
@@ -189,6 +187,28 @@ func (vm *VM) Run() error {
 			index := vm.pop()
 			left := vm.pop()
 			err := vm.executeIndexExpression(left, index)
+			if err != nil {
+				return err
+			}
+		case code.OpCall:
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
+			if !ok {
+				return fmt.Errorf("calling non-function")
+			}
+			frame := NewFrame(fn)
+			vm.pushFrame(frame)
+		case code.OpReturnValue:
+			returnValue := vm.pop()
+			vm.popFrame()
+			vm.pop()
+			err := vm.push(returnValue)
+			if err != nil {
+				return err
+			}
+		case code.OpReturn:
+			vm.popFrame()
+			vm.pop()
+			err := vm.push(Null)
 			if err != nil {
 				return err
 			}
