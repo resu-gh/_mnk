@@ -16,7 +16,7 @@ const (
 	EQUALS      // ==
 	LESSGREATER // > or <
 	SUM         // +
-	PRODUCT     //*
+	PRODUCT     // *
 	PREFIX      // -X or !X
 	CALL        // myFunction()
 	INDEX       // array[index]
