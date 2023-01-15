@@ -71,10 +71,10 @@ func TestResolveLocal(t *testing.T) {
 	local.Define("c")
 	local.Define("d")
 	expected := []Symbol{
-		Symbol{Name: "a", Scope: GlobalScope, Index: 0},
-		Symbol{Name: "b", Scope: GlobalScope, Index: 1},
-		Symbol{Name: "c", Scope: LocalScope, Index: 0},
-		Symbol{Name: "d", Scope: LocalScope, Index: 1},
+		{Name: "a", Scope: GlobalScope, Index: 0},
+		{Name: "b", Scope: GlobalScope, Index: 1},
+		{Name: "c", Scope: LocalScope, Index: 0},
+		{Name: "d", Scope: LocalScope, Index: 1},
 	}
 	for _, sym := range expected {
 		result, ok := local.Resolve(sym.Name)
@@ -105,19 +105,19 @@ func TestResolveNestedLocal(t *testing.T) {
 		{
 			firstLocal,
 			[]Symbol{
-				Symbol{Name: "a", Scope: GlobalScope, Index: 0},
-				Symbol{Name: "b", Scope: GlobalScope, Index: 1},
-				Symbol{Name: "c", Scope: LocalScope, Index: 0},
-				Symbol{Name: "d", Scope: LocalScope, Index: 1},
+				{Name: "a", Scope: GlobalScope, Index: 0},
+				{Name: "b", Scope: GlobalScope, Index: 1},
+				{Name: "c", Scope: LocalScope, Index: 0},
+				{Name: "d", Scope: LocalScope, Index: 1},
 			},
 		},
 		{
 			secondLocal,
 			[]Symbol{
-				Symbol{Name: "a", Scope: GlobalScope, Index: 0},
-				Symbol{Name: "b", Scope: GlobalScope, Index: 1},
-				Symbol{Name: "e", Scope: LocalScope, Index: 0},
-				Symbol{Name: "f", Scope: LocalScope, Index: 1},
+				{Name: "a", Scope: GlobalScope, Index: 0},
+				{Name: "b", Scope: GlobalScope, Index: 1},
+				{Name: "e", Scope: LocalScope, Index: 0},
+				{Name: "f", Scope: LocalScope, Index: 1},
 			},
 		},
 	}
@@ -127,6 +127,32 @@ func TestResolveNestedLocal(t *testing.T) {
 			if !ok {
 				t.Errorf("name %s not resolvable", sym.Name)
 				continue
+			}
+			if result != sym {
+				t.Errorf("expected %s to resolve to %+v, got=%+v", sym.Name, sym, result)
+			}
+		}
+	}
+}
+
+func TestDefineResolveBuiltins(t *testing.T) {
+	global := NewSymbolTable()
+	firstLocal := NewEnclosedSymbolTable(global)
+	secondLocal := NewEnclosedSymbolTable(firstLocal)
+	expected := []Symbol{
+		{Name: "a", Scope: BuiltinScope, Index: 0},
+		{Name: "b", Scope: BuiltinScope, Index: 1},
+		{Name: "c", Scope: BuiltinScope, Index: 2},
+		{Name: "d", Scope: BuiltinScope, Index: 3},
+	}
+	for i, v := range expected {
+		global.DefineBuiltin(i, v.Name)
+	}
+	for _, table := range []*SymbolTable{global, firstLocal, secondLocal} {
+		for _, sym := range expected {
+			result, ok := table.Resolve(sym.Name)
+			if !ok {
+				t.Errorf("name %s not resolvable", sym.Name)
 			}
 			if result != sym {
 				t.Errorf("expected %s to resolve to %+v, got=%+v", sym.Name, sym, result)

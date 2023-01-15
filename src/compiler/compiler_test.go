@@ -565,7 +565,7 @@ func TestFunctionCalls(t *testing.T) {
             `,
 			expectedConstants: []interface{}{
 				[]code.Instructions{
-                    code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpGetLocal, 0),
 					code.Make(code.OpReturnValue),
 				},
 				24,
@@ -586,11 +586,11 @@ func TestFunctionCalls(t *testing.T) {
             `,
 			expectedConstants: []interface{}{
 				[]code.Instructions{
-                    code.Make(code.OpGetLocal, 0),
-                    code.Make(code.OpPop),
-                    code.Make(code.OpGetLocal, 1),
-                    code.Make(code.OpPop),
-                    code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpPop),
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpPop),
+					code.Make(code.OpGetLocal, 2),
 					code.Make(code.OpReturnValue),
 				},
 				24,
@@ -675,6 +675,45 @@ func TestLetStatementScopes(t *testing.T) {
 			},
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstant, 2),
+				code.Make(code.OpPop),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
+func TestBuiltins(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+            len([]);
+            push([], 1);
+            `,
+			expectedConstants: []interface{}{1},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpGetBuiltin, 0),
+				code.Make(code.OpArray, 0),
+				code.Make(code.OpCall, 1),
+				code.Make(code.OpPop),
+				code.Make(code.OpGetBuiltin, 5),
+				code.Make(code.OpArray, 0),
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpCall, 2),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input: ` fn() { len([]) } `,
+			expectedConstants: []interface{}{
+				[]code.Instructions{
+					code.Make(code.OpGetBuiltin, 0),
+					code.Make(code.OpArray, 0),
+					code.Make(code.OpCall, 1),
+					code.Make(code.OpReturnValue),
+				},
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpConstant, 0),
 				code.Make(code.OpPop),
 			},
 		},
